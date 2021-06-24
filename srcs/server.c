@@ -6,48 +6,50 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 14:28:56 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/06/18 22:11:10 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/06/24 09:56:39 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../includes/minitalk.h"
 
-int		bin_to_dec(int bin)
-{
-	int		num;
-	int		dec;
-	int		base;
-	int		rem;
+static		t_msg g_msg;
 
-	num = bin;
-	dec = 0;
-	base = 1;
-	rem = 0;
-	while (num > 0)
+void	signal_handler(int signal)
+{
+	if (signal == SIGUSR1)
+		g_msg.c = g_msg.c << 1;
+	else if (signal == SIGUSR2)
 	{
-		rem = num % 10;
-		dec = dec + rem * base; 
-		num = num / 10;
-		base = base * 2;
+		g_msg.c = g_msg.c << 1;
+		g_msg.c += 1;
 	}
-	ft_putnbr_fd(dec, 1);
-	return (dec);
-}
-
-void	signal_handler(int num)
-{
-	
+	if (g_msg.len == 7)
+	{
+		ft_putchar_fd(g_msg.c, 1);
+		g_msg.c = 0;
+		g_msg.len = -1;
+	}
+	g_msg.len++;
 }
 
 int		main(void)
 {
+	int		i;
 	int		pid;
-	char	*show_pid;
 
+	i = 0;
 	pid = getpid();
-	show_pid = ft_itoa(pid);
-	ft_putstr_fd(show_pid, 1);
+	ft_putstr_fd("Server launched:\nMy PID is: ", 1);
+	ft_putnbr_fd(pid, 1);
 	ft_putchar_fd('\n', 1);
-	bin_to_dec(1110011);
+	g_msg.len = 0;
+	g_msg.c = 0;
+	while (42)
+	{
+		if (signal(SIGUSR1, signal_handler) == SIG_ERR)
+			exit(0);
+		if (signal(SIGUSR2, signal_handler) == SIG_ERR)
+			exit(0);
+	}
 	return (0);
 }
