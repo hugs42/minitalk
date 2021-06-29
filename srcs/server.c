@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 14:28:56 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/06/28 16:13:27 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/06/29 11:31:14 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ void	signal_handler(int signal)
 
 int	main(void)
 {
-	int		i;
 	int		pid;
 
-	i = 0;
 	pid = getpid();
 	ft_putstr_fd("Server launched:\nMy PID is: ", 1);
 	ft_putnbr_fd(pid, 1);
