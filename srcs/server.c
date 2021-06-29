@@ -6,13 +6,13 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 14:28:56 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/06/24 09:56:39 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/06/28 16:13:27 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../includes/minitalk.h"
 
-static		t_msg g_msg;
+static t_msg	g_msg;
 
 void	signal_handler(int signal)
 {
@@ -32,7 +32,7 @@ void	signal_handler(int signal)
 	g_msg.len++;
 }
 
-int		main(void)
+int	main(void)
 {
 	int		i;
 	int		pid;
