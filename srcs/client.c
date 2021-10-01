@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/28 15:43:10 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/06/29 11:45:30 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/09/30 12:46:48 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	ascii_to_bin(int pid, char *msg, int len)
 		{
 			bit_sender(i, pid, mask, msg);
 			mask >>= 1;
-			usleep(75);
+			usleep(50);
 		}
 		i++;
 	}
