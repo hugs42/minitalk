@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 14:28:56 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/10/06 14:02:09 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/10/06 14:00:58 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../includes/minitalk.h"
 
-void	write_msg(char c)
+void	write_msg(char c, siginfo_t *info)
 {
 	if (c == '\0')
+	{
 		ft_putstr_fd("\n>> ", 1);
+		kill(info->si_pid, SIGUSR1);
+	}
 	else if (c != '\0')
 		ft_putchar_fd(c, 1);
 }
@@ -34,7 +37,7 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	}
 	if (len == 7)
 	{
-		write_msg(c);
+		write_msg(c, info);
 		c = 0;
 		len = -1;
 	}
@@ -43,10 +46,12 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 
 int	main(int argc, char **argv)
 {
+	int					pid;
 	struct sigaction	sa_signal;
 	sigset_t			block_mask;
-	int					pid;
 
+	(void)argv;
+	pid = getpid();
 	if (argc != 1)
 		exit (0);
 	sigemptyset(&block_mask);
@@ -58,7 +63,6 @@ int	main(int argc, char **argv)
 	sa_signal.sa_sigaction = signal_handler;
 	sigaction(SIGUSR1, &sa_signal, NULL);
 	sigaction(SIGUSR2, &sa_signal, NULL);
-	pid = getpid();
 	ft_putstr_fd("Server launched:\nMy PID is: ", 1);
 	ft_putnbr_fd(pid, 1);
 	ft_putstr_fd("\n>> ", 1);

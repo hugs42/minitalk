@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/29 11:08:52 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/06/29 11:19:19 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/10/06 14:05:12 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	ft_putchar_fd(int c, int fd)
 void	ft_putnbr_fd(int nb, int fd)
 {
 	if (nb == -2147483648)
-	{
 		ft_putstr_fd("-2147483648", fd);
-	}
 	else
 	{
 		if (nb < 0)
