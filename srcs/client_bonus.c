@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/28 15:43:10 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/10/06 13:57:55 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/10/08 12:35:07 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	msg_receipt(int signal, siginfo_t *info, void *context)
 {
-	(void)signal;
 	(void)info;
 	(void)context;
-	ft_putstr_fd(">> message received\n", 1);
+	if (signal == SIGUSR2)
+		ft_putstr_fd("\n\033[92m>> message received\n\033[0m", 1);
 }
 
 int	check_error(int argc, int server_pid)
@@ -35,25 +35,27 @@ int	check_error(int argc, int server_pid)
 	return (SUCCESS);
 }
 
-static size_t	bit_sender(int pid, char c)
+size_t	bit_sender(int pid, char c)
 {
-	static size_t	len = 0;
 	int				bit;
+	int				bin;
+	static size_t	len = 0;
 
-	bit = 8;
-	while (bit--)
+	bit = -1;
+	while (++bit < 8)
 	{
-		if ((c >> bit & 1) == 0)
+		bin = (c >> bit & 1);
+		if (bin == 0)
 		{
 			if (kill(pid, SIGUSR1) == ERROR)
 				return (ERROR);
 		}
-		else if ((c >> bit & 1) == 1)
+		else if (bin == 1)
 		{
 			if (kill(pid, SIGUSR2) == ERROR)
 				return (ERROR);
 		}
-		usleep(175);
+		usleep(150);
 	}
 	len++;
 	return (len);
@@ -85,16 +87,22 @@ int	main(int argc, char **argv)
 {
 	int					i;
 	int					server_pid;
-	struct sigaction	sa_signal;
+	struct sigaction	sa_receipt;
+	sigset_t			block_mask;
 
 	i = -1;
 	if (argc == 3)
 		server_pid = ft_atoi(argv[1]);
 	if (check_error(argc, server_pid) == ERROR)
 		exit (0);
-	sa_signal.sa_sigaction = &msg_receipt;
-	sa_signal.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &sa_signal, NULL);
+	sigemptyset(&block_mask);
+	sigaddset(&block_mask, SIGINT);
+	sigaddset(&block_mask, SIGQUIT);
+	sa_receipt.sa_mask = block_mask;
+	sa_receipt.sa_handler = 0;
+	sa_receipt.sa_sigaction = msg_receipt;
+	sa_receipt.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR2, &sa_receipt, NULL);
 	if (client_loop(argv[2], server_pid) == ERROR)
 		exit (0);
 	return (0);

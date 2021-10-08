@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/28 15:43:10 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/10/06 14:02:50 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/10/08 12:35:24 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,25 @@
 
 size_t	bit_sender(int pid, char c)
 {
-	static size_t	len = 0;
 	int				bit;
+	int				bin;
+	static size_t	len = 0;
 
-	bit = 8;
-	while (bit--)
+	bit = -1;
+	while (++bit < 8)
 	{
-		if ((c >> bit & 1) == 0)
+		bin = (c >> bit & 1);
+		if (bin == 0)
 		{
 			if (kill(pid, SIGUSR1) == ERROR)
 				return (ERROR);
 		}
-		else if ((c >> bit & 1) == 1)
+		else if (bin == 1)
 		{
 			if (kill(pid, SIGUSR2) == ERROR)
 				return (ERROR);
 		}
-		usleep(175);
+		usleep(150);
 	}
 	len++;
 	return (len);

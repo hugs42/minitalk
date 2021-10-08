@@ -6,7 +6,7 @@
 /*   By: hugsbord <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 14:28:56 by hugsbord          #+#    #+#             */
-/*   Updated: 2021/10/06 14:02:09 by hugsbord         ###   ########.fr       */
+/*   Updated: 2021/10/08 12:12:42 by hugsbord         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	write_msg(char c)
 {
-	if (c == '\0')
+	if (c == 0)
 		ft_putstr_fd("\n>> ", 1);
 	else if (c != '\0')
 		ft_putchar_fd(c, 1);
@@ -25,27 +25,25 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	static char		c = 0;
 	static size_t	len = 0;
 
+	(void)context;
 	if (signal == SIGUSR1)
-		c = c << 1;
+		signal = 0;
 	else if (signal == SIGUSR2)
-	{
-		c = c << 1;
-		c += 1;
-	}
-	if (len == 7)
+		signal = 1;
+	c += signal << len;
+	if (++len == 8)
 	{
 		write_msg(c);
 		c = 0;
-		len = -1;
+		len = 0;
 	}
-	len++;
 }
 
 int	main(int argc, char **argv)
 {
+	int					pid;
 	struct sigaction	sa_signal;
 	sigset_t			block_mask;
-	int					pid;
 
 	if (argc != 1)
 		exit (0);
@@ -59,9 +57,9 @@ int	main(int argc, char **argv)
 	sigaction(SIGUSR1, &sa_signal, NULL);
 	sigaction(SIGUSR2, &sa_signal, NULL);
 	pid = getpid();
-	ft_putstr_fd("Server launched:\nMy PID is: ", 1);
+	ft_putstr_fd("Server launched:\nMy PID is: \033[92m", 1);
 	ft_putnbr_fd(pid, 1);
-	ft_putstr_fd("\n>> ", 1);
+	ft_putstr_fd("\n\033[0m>> ", 1);
 	while (42)
 		pause();
 	return (0);
